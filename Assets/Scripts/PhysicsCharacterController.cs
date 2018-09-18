@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,11 @@ public class PhysicsCharacterController : MonoBehaviour
     [SerializeField] private float maxSpeed = 10f;
     [SerializeField] private float accelerationForce = 2f;
     [SerializeField] private float jumpForce = 5f;
+    [SerializeField] private PhysicsMaterial2D playerStoppingPhysicsMaterial, 
+        playerMovingPhysicsMaterial, playerFallingPhysicsMaterial;
+   // [Tooltip("We override it's friction with the above values!")]
+    [SerializeField] private Collider2D playerGroundCollider;
+
 
     private Rigidbody2D rb2D;
     private float horizontalInput;
@@ -16,14 +22,14 @@ public class PhysicsCharacterController : MonoBehaviour
         rb2D = GetComponent<Rigidbody2D>();
     }
 
-    private void GetInput()
+    private void GetMoveInput()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
     }
 
     private void Update()
     {
-        GetInput();
+        GetMoveInput();
 
         if (Input.GetButtonDown("Jump"))
             rb2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
@@ -31,8 +37,22 @@ public class PhysicsCharacterController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        UpdateFriction(horizontalInput);
         Move();
 
+    }
+
+    private void UpdateFriction(float horizontalInput)
+    {
+        if (Mathf.Abs(horizontalInput) > 0)
+        {
+            playerGroundCollider.sharedMaterial = playerMovingPhysicsMaterial;
+        }
+        else
+        {
+            playerGroundCollider.sharedMaterial = playerStoppingPhysicsMaterial;
+        }
+        //TODO if not on ground, use falling phys material
     }
 
     private void Move()
