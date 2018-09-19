@@ -10,17 +10,23 @@ public class PhysicsCharacterController : MonoBehaviour
     [SerializeField] private float jumpForce = 5f;
     [SerializeField] private PhysicsMaterial2D playerStoppingPhysicsMaterial, 
         playerMovingPhysicsMaterial, playerFallingPhysicsMaterial;
-   // [Tooltip("We override it's friction with the above values!")]
-    [SerializeField] private Collider2D playerGroundCollider;
+    [SerializeField] private Collider2D playerGroundCollider, checkForGroundTrigger;
+    [SerializeField] private LayerMask whatIsGround;
 
 
     private Rigidbody2D rb2D;
     private float horizontalInput;
     private bool isOnGround;
+    private ContactFilter2D groundContactFilter;
+    private Collider2D[] groundHitDetectionArray = new Collider2D[16];
 
     private void Awake()
     {
         rb2D = GetComponent<Rigidbody2D>();
+        checkForGroundTrigger.isTrigger = true;
+        groundContactFilter.useTriggers = false;
+        groundContactFilter.SetLayerMask(whatIsGround);
+        groundContactFilter.useLayerMask = true;
     }
 
     private void GetMoveInput()
@@ -32,25 +38,33 @@ public class PhysicsCharacterController : MonoBehaviour
     {
         GetMoveInput();
 
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") && isOnGround)
             rb2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
     }
 
     private void FixedUpdate()
     {
+        UpdateIsOnGround();
         UpdateFriction(horizontalInput);
         Move();
-        CircleCollider2D c = new CircleCollider2D; c.
+     
     }
 
     private void UpdateIsOnGround()
     {
         // TODO: OverlapCircleNonAlloc
+        int hitGround = checkForGroundTrigger.OverlapCollider(groundContactFilter, groundHitDetectionArray);
+        isOnGround = hitGround > 0;
+        Debug.Log($"on ground: {isOnGround}");
     }
 
-    private void UpdateFriction(float horizontalInput)
+    private void UpdateFriction(float xInput)
     {
-        if (Mathf.Abs(horizontalInput) > 0)
+        if (!isOnGround)
+        {
+            playerGroundCollider.sharedMaterial = playerFallingPhysicsMaterial;
+        }
+        else if (Mathf.Abs(xInput) > 0)
         {
             playerGroundCollider.sharedMaterial = playerMovingPhysicsMaterial;
         }
