@@ -16,6 +16,7 @@ public class PhysicsCharacterController : MonoBehaviour
 
     private Rigidbody2D rb2D;
     private float horizontalInput;
+    private bool isOnGround;
 
     private void Awake()
     {
@@ -39,7 +40,12 @@ public class PhysicsCharacterController : MonoBehaviour
     {
         UpdateFriction(horizontalInput);
         Move();
+        CircleCollider2D c = new CircleCollider2D; c.
+    }
 
+    private void UpdateIsOnGround()
+    {
+        // TODO: OverlapCircleNonAlloc
     }
 
     private void UpdateFriction(float horizontalInput)
