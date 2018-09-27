@@ -52,10 +52,8 @@ public class PhysicsCharacterController : MonoBehaviour
 
     private void UpdateIsOnGround()
     {
-        // TODO: OverlapCircleNonAlloc
         int hitGround = checkForGroundTrigger.OverlapCollider(groundContactFilter, groundHitDetectionArray);
         isOnGround = hitGround > 0;
-        Debug.Log($"on ground: {isOnGround}");
     }
 
     private void UpdateFriction(float xInput)
