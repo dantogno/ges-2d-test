@@ -12,7 +12,6 @@ public class Hazard : MonoBehaviour
         // player's actual physical hitbox, which would result in false positives.
         if (collision.CompareTag("Player") && !collision.isTrigger)
         {
-
             Debug.Log("Player hit hazard!");
         }
     }
