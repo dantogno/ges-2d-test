@@ -4,20 +4,15 @@ using UnityEngine;
 
 public class Hazard : MonoBehaviour
 {
-    [SerializeField]
-    private float test = 1;
-    private void Update()
-    {
-        Debug.Log("test");
-    }
-    private void Start()
-    {
-        Debug.Log("Test");
-    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        // Check if the player bumped us. We need to ignore triggers,
+        // or the player's ground check trigger will count for hitting hazards.
+        // This is bad because the ground check circle collider is bigger than the
+        // player's actual physical hitbox, which would result in false positives.
+        if (collision.CompareTag("Player") && !collision.isTrigger)
         {
+
             Debug.Log("Player hit hazard!");
         }
     }
