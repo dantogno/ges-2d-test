@@ -11,22 +11,19 @@ public class PhysicsCharacterController : MonoBehaviour
     [SerializeField] private PhysicsMaterial2D playerStoppingPhysicsMaterial, 
         playerMovingPhysicsMaterial, playerFallingPhysicsMaterial;
     [SerializeField] private Collider2D playerGroundCollider, checkForGroundTrigger;
-    [SerializeField] private LayerMask whatIsGround;
 
+    [SerializeField]
+    private ContactFilter2D groundContactFilterNew;
 
     private Rigidbody2D rb2D;
     private float horizontalInput;
     private bool isOnGround;
-    private ContactFilter2D groundContactFilter;
     private Collider2D[] groundHitDetectionArray = new Collider2D[16];
 
     private void Awake()
     {
         rb2D = GetComponent<Rigidbody2D>();
         checkForGroundTrigger.isTrigger = true;
-        groundContactFilter.useTriggers = false;
-        groundContactFilter.SetLayerMask(whatIsGround);
-        groundContactFilter.useLayerMask = true;
     }
 
     private void GetMoveInput()
@@ -38,25 +35,29 @@ public class PhysicsCharacterController : MonoBehaviour
     {
         GetMoveInput();
 
-        if (Input.GetButtonDown("Jump") && isOnGround)
-            rb2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        HandleJumpInput();
     }
 
     private void FixedUpdate()
     {
         UpdateIsOnGround();
-        UpdateFriction(horizontalInput);
+        UpdatePhysicsMaterial(horizontalInput);
         Move();
-     
+    }
+
+    private void HandleJumpInput()
+    {
+        if (Input.GetButtonDown("Jump") && isOnGround)
+            rb2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
     }
 
     private void UpdateIsOnGround()
     {
-        int hitGround = checkForGroundTrigger.OverlapCollider(groundContactFilter, groundHitDetectionArray);
+        int hitGround = checkForGroundTrigger.OverlapCollider(groundContactFilterNew, groundHitDetectionArray);
         isOnGround = hitGround > 0;
     }
 
-    private void UpdateFriction(float xInput)
+    private void UpdatePhysicsMaterial(float xInput)
     {
         if (!isOnGround)
         {
