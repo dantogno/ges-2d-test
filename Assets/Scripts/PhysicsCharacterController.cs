@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PhysicsCharacterController : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class PhysicsCharacterController : MonoBehaviour
     private float horizontalInput;
     private bool isOnGround;
     private Collider2D[] groundHitDetectionArray = new Collider2D[16];
+    private Checkpoint currentCheckpoint;
 
     private void Awake()
     {
@@ -29,6 +31,23 @@ public class PhysicsCharacterController : MonoBehaviour
     private void GetMoveInput()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
+    }
+
+    public void SetCheckpoint(Checkpoint newCurrentCheckpoint)
+    {
+        if (currentCheckpoint != null)
+            currentCheckpoint.SetIsActivated(false);
+
+        currentCheckpoint = newCurrentCheckpoint;
+        currentCheckpoint.SetIsActivated(true);
+    }
+
+    public void Respawn()
+    {
+        if (currentCheckpoint == null)
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        else
+            rb2D.transform.position = currentCheckpoint.transform.position;
     }
 
     private void Update()

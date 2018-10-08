@@ -13,8 +13,12 @@ public class Hazard : MonoBehaviour
         // player's actual physical hitbox, which would result in false positives.
         if (collision.CompareTag("Player") && !collision.isTrigger)
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             Debug.Log("Player hit hazard!");
+
+            PhysicsCharacterController player = collision.GetComponent<PhysicsCharacterController>();
+
+            player.Respawn();
         }
     }
 
