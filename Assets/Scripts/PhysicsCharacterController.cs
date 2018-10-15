@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class PhysicsCharacterController : MonoBehaviour
 {
+    #region Unity editor Serialized Fields
     [SerializeField]
     private float maxSpeed = 10f;
 
@@ -28,6 +29,8 @@ public class PhysicsCharacterController : MonoBehaviour
     [SerializeField]
     private Animator animator;
 
+    #endregion
+    #region Private Fields
     private Rigidbody2D rigidbody2D;
     private float horizontalInput;
     private bool isOnGround, isFacingRight = true;
@@ -35,18 +38,30 @@ public class PhysicsCharacterController : MonoBehaviour
     private Checkpoint currentCheckpoint;
     private const string horizontalInputAnimationParameter = "xInput",
         yVelocityAnimationParameter = "yVelocity", isOnGroundAnimationParameter = "isOnGround";
-
+    #endregion
+    #region Monobehaviour Functions
     private void Awake()
     {
         rigidbody2D = GetComponent<Rigidbody2D>();
         checkForGroundTrigger.isTrigger = true;
     }
 
-    private void GetMoveInput()
+    private void Update()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
+        GetMoveInput();
+        HandleJumpInput();
+        UpdateAnimationParameters();
     }
 
+    private void FixedUpdate()
+    {
+        UpdateIsOnGround();
+        UpdatePhysicsMaterial(horizontalInput);
+        Move();
+        UpdateDirectionCharacterFacing();
+    }
+    #endregion
+    #region Public Functions
     public void SetCurrentCheckpoint(Checkpoint newCurrentCheckpoint)
     {
         if (currentCheckpoint != null)
@@ -66,20 +81,11 @@ public class PhysicsCharacterController : MonoBehaviour
             rigidbody2D.velocity = Vector2.zero;
         }
     }
-
-    private void Update()
+    #endregion
+    #region Private Functions
+    private void GetMoveInput()
     {
-        GetMoveInput();
-        HandleJumpInput();
-        UpdateAnimationParameters();
-    }
-
-    private void FixedUpdate()
-    {
-        UpdateIsOnGround();
-        UpdatePhysicsMaterial(horizontalInput);
-        Move();
-        UpdateDirectionCharacterFacing();
+        horizontalInput = Input.GetAxisRaw("Horizontal");
     }
 
     private void HandleJumpInput()
@@ -143,5 +149,5 @@ public class PhysicsCharacterController : MonoBehaviour
         else if (horizontalInput < 0 && isFacingRight)
             FlipCharacter();            
     }
-
+    #endregion
 }
