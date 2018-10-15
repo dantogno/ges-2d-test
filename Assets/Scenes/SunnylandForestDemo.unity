@@ -125,6 +125,7 @@ GameObject:
   - component: {fileID: 228648351}
   - component: {fileID: 228648349}
   - component: {fileID: 228648354}
+  - component: {fileID: 228648355}
   - component: {fileID: 228648350}
   m_Layer: 0
   m_Name: PlayerCharacter
@@ -184,6 +185,7 @@ MonoBehaviour:
     maxDepth: 0
     minNormalAngle: 0
     maxNormalAngle: 0
+  animator: {fileID: 228648355}
 --- !u!70 &228648351
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -277,6 +279,24 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!95 &228648355
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 228648348}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 997a5dd81a7d950488e3163e21455145, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &789149214
 GameObject:
   m_ObjectHideFlags: 3
@@ -319,16 +339,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_LookaheadTime: 0.85
-  m_LookaheadSmoothing: 3
+  m_LookaheadSmoothing: 20.7
   m_LookaheadIgnoreY: 0
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
   m_ScreenX: 0.5
-  m_ScreenY: 0.49999997
+  m_ScreenY: 0.4999998
   m_CameraDistance: 10
   m_DeadZoneWidth: 0.23
-  m_DeadZoneHeight: 0.17031251
+  m_DeadZoneHeight: 0.3202456
   m_DeadZoneDepth: 0
   m_UnlimitedSoftZone: 0
   m_SoftZoneWidth: 1.97
@@ -433,7 +453,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 803975479}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -11.6, y: 3.1199994, z: -10}
+  m_LocalPosition: {x: -11.6, y: 3.1199973, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -810,7 +830,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1324906861}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -11.6, y: 3.1199994, z: -10}
+  m_LocalPosition: {x: -11.6, y: 3.1199973, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 789149215}

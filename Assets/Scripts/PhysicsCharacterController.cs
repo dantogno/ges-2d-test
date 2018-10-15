@@ -6,25 +6,39 @@ using UnityEngine.SceneManagement;
 
 public class PhysicsCharacterController : MonoBehaviour
 {
-    [SerializeField] private float maxSpeed = 10f;
-    [SerializeField] private float accelerationForce = 2f;
-    [SerializeField] private float jumpForce = 5f;
-    [SerializeField] private PhysicsMaterial2D playerStoppingPhysicsMaterial, 
+    [SerializeField]
+    private float maxSpeed = 10f;
+
+    [SerializeField]
+    private float accelerationForce = 2f;
+
+    [SerializeField]
+    private float jumpForce = 5f;
+
+    [SerializeField]
+    private PhysicsMaterial2D playerStoppingPhysicsMaterial, 
         playerMovingPhysicsMaterial, playerFallingPhysicsMaterial;
-    [SerializeField] private Collider2D playerGroundCollider, checkForGroundTrigger;
+
+    [SerializeField]
+    private Collider2D playerGroundCollider, checkForGroundTrigger;
 
     [SerializeField]
     private ContactFilter2D groundContactFilterNew;
 
-    private Rigidbody2D rb2D;
+    [SerializeField]
+    private Animator animator;
+
+    private Rigidbody2D rigidbody2D;
     private float horizontalInput;
-    private bool isOnGround;
+    private bool isOnGround, isFacingRight = true;
     private Collider2D[] groundHitDetectionArray = new Collider2D[16];
     private Checkpoint currentCheckpoint;
+    private const string horizontalInputAnimationParameter = "xInput",
+        yVelocityAnimationParameter = "yVelocity", isOnGroundAnimationParameter = "isOnGround";
 
     private void Awake()
     {
-        rb2D = GetComponent<Rigidbody2D>();
+        rigidbody2D = GetComponent<Rigidbody2D>();
         checkForGroundTrigger.isTrigger = true;
     }
 
@@ -47,14 +61,17 @@ public class PhysicsCharacterController : MonoBehaviour
         if (currentCheckpoint == null)
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         else
-            rb2D.transform.position = currentCheckpoint.transform.position;
+        {
+            rigidbody2D.transform.position = currentCheckpoint.transform.position;
+            rigidbody2D.velocity = Vector2.zero;
+        }
     }
 
     private void Update()
     {
         GetMoveInput();
-
         HandleJumpInput();
+        UpdateAnimationParameters();
     }
 
     private void FixedUpdate()
@@ -62,12 +79,16 @@ public class PhysicsCharacterController : MonoBehaviour
         UpdateIsOnGround();
         UpdatePhysicsMaterial(horizontalInput);
         Move();
+        UpdateDirectionCharacterFacing();
     }
 
     private void HandleJumpInput()
     {
         if (Input.GetButtonDown("Jump") && isOnGround)
-            rb2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        {
+            rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, 0);
+            rigidbody2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        }
     }
 
     private void UpdateIsOnGround()
@@ -90,14 +111,37 @@ public class PhysicsCharacterController : MonoBehaviour
         {
             playerGroundCollider.sharedMaterial = playerStoppingPhysicsMaterial;
         }
-        //TODO if not on ground, use falling phys material
     }
 
     private void Move()
     {
-        Vector2 newVelocity = rb2D.velocity;
-        rb2D.AddForce(horizontalInput * accelerationForce * Vector2.right, ForceMode2D.Impulse);
-        newVelocity.x = Mathf.Clamp(rb2D.velocity.x, -maxSpeed, maxSpeed);
-        rb2D.velocity = newVelocity;
+        Vector2 newVelocity = rigidbody2D.velocity;
+        rigidbody2D.AddForce(horizontalInput * accelerationForce * Vector2.right, ForceMode2D.Impulse);
+        newVelocity.x = Mathf.Clamp(rigidbody2D.velocity.x, -maxSpeed, maxSpeed);
+        rigidbody2D.velocity = newVelocity;
     }
+
+    private void FlipCharacter()
+    {
+        isFacingRight = !isFacingRight;
+        Vector3 horizontallyFlippedScale = transform.localScale;
+        horizontallyFlippedScale.x *= -1;
+        transform.localScale = horizontallyFlippedScale;
+    }
+
+    private void UpdateAnimationParameters()
+    {
+        animator.SetFloat(horizontalInputAnimationParameter, Mathf.Abs(horizontalInput));
+        animator.SetFloat(yVelocityAnimationParameter, rigidbody2D.velocity.y);
+        animator.SetBool(isOnGroundAnimationParameter, isOnGround);
+    }
+
+    private void UpdateDirectionCharacterFacing()
+    {
+        if (horizontalInput > 0 && !isFacingRight)
+            FlipCharacter();
+        else if (horizontalInput < 0 && isFacingRight)
+            FlipCharacter();            
+    }
+
 }
