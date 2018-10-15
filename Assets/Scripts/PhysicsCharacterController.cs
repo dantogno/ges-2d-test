@@ -33,7 +33,7 @@ public class PhysicsCharacterController : MonoBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
     }
 
-    public void SetCheckpoint(Checkpoint newCurrentCheckpoint)
+    public void SetCurrentCheckpoint(Checkpoint newCurrentCheckpoint)
     {
         if (currentCheckpoint != null)
             currentCheckpoint.SetIsActivated(false);

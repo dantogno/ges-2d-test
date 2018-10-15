@@ -30,7 +30,7 @@ public class Checkpoint : MonoBehaviour {
         {
             Debug.Log("Player touched checkpoint.");
             PhysicsCharacterController player = collision.GetComponent<PhysicsCharacterController>();
-            player.SetCheckpoint(this);
+            player.SetCurrentCheckpoint(this);
             audioSource.Play();
         }
     }
@@ -101,6 +101,6 @@ public class Checkpoint : MonoBehaviour {
 // 21. Add audio source
 // 22. Test w/ play on awake. no play on awake. update prefab
 // 23. Getcomponent and play in code
-// 24. check if isActivated before playing sfx
+// 24. check if isActivated before playing sfxd
 
  
