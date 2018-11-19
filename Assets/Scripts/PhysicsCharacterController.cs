@@ -71,6 +71,8 @@ public class PhysicsCharacterController : MonoBehaviour
         currentCheckpoint.SetIsActivated(true);
     }
 
+    // TODO: death animation
+
     public void Respawn()
     {
         if (currentCheckpoint == null)
@@ -118,6 +120,20 @@ public class PhysicsCharacterController : MonoBehaviour
             playerGroundCollider.sharedMaterial = playerStoppingPhysicsMaterial;
         }
     }
+    private void UpdateAnimationParameters()
+    {
+        animator.SetFloat(horizontalInputAnimationParameter, Mathf.Abs(horizontalInput));
+        animator.SetFloat(yVelocityAnimationParameter, rigidbody2D.velocity.y);
+        animator.SetBool(isOnGroundAnimationParameter, isOnGround);
+    }
+
+    private void UpdateDirectionCharacterFacing()
+    {
+        if (horizontalInput > 0 && !isFacingRight)
+            FlipCharacter();
+        else if (horizontalInput < 0 && isFacingRight)
+            FlipCharacter();
+    }
 
     private void Move()
     {
@@ -133,21 +149,6 @@ public class PhysicsCharacterController : MonoBehaviour
         Vector3 horizontallyFlippedScale = transform.localScale;
         horizontallyFlippedScale.x *= -1;
         transform.localScale = horizontallyFlippedScale;
-    }
-
-    private void UpdateAnimationParameters()
-    {
-        animator.SetFloat(horizontalInputAnimationParameter, Mathf.Abs(horizontalInput));
-        animator.SetFloat(yVelocityAnimationParameter, rigidbody2D.velocity.y);
-        animator.SetBool(isOnGroundAnimationParameter, isOnGround);
-    }
-
-    private void UpdateDirectionCharacterFacing()
-    {
-        if (horizontalInput > 0 && !isFacingRight)
-            FlipCharacter();
-        else if (horizontalInput < 0 && isFacingRight)
-            FlipCharacter();            
     }
     #endregion
 }
